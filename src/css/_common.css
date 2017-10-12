@@ -1,0 +1,177 @@
+/* Mixins */
+
+@define-mixin background_config {
+  /* background: #aaa url("../images/sample_anime.gif") center / cover no-repeat fixed; */
+  background: #aaa url("../images/grid.png") repeat fixed;
+}
+
+@define-mixin ba_content $index {
+  content: '';
+  display: block;
+  position: absolute;
+  z-index: $index;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+@define-mixin btn_content $btn_color, $font_color {
+  background-color: $btn_color;
+  border-bottom: solid 2px color($btn_color shade(35%));
+  color: $font_color;
+
+  &:hover {
+    background-color: color($btn_color blackness(20%));
+    border-bottom: solid 2px color($btn_color shade(55%));
+  }
+
+  &:active {
+    border: none;
+    transform: translate(0, 2px);
+  }
+}
+
+@define-mixin calculator_design $key_color {
+  width: calc(50% - .6vw);
+  border-radius: 10px;
+  background-color: color($key_color alpha(30%));
+
+  .calculator-title {
+    margin: 1vw 0;
+    color: color($key_color whiteness(55%));
+    color: $key_color;
+    font-size: 1.3rem;
+    text-shadow: 1px 1px 0 color($key_color shade(35%));
+    text-align: center;
+    letter-spacing: .1rem;
+  }
+
+  .display {
+    margin: 0 auto 15px;
+    width: calc(($button_width * 4) - ($button_space * 3));
+    height: 3vw;
+    padding: 0 1em;
+    line-height: 3vw;
+    font-size: 1.2rem;
+    text-align: right;
+    border-bottom: solid 2px $key_color;
+  }
+
+  table {
+    margin: 0 auto 15px;
+    border-collapse: separate;
+    border-spacing: $button_space;
+
+    tr td {
+      .btn {
+        width: $button_width;
+        height: $button_height;
+        font-size: 1rem;
+        text-align: center;
+        line-height: 5vw;
+        border-radius: 5px;
+        transition: .3s;
+
+        &.btn-zero {
+          width: calc(($button_width * 2) + $button_space);
+        }
+
+        &.btn-default {
+          @add-mixin btn_content $button_default_color, #333;
+        }
+
+        &.btn-accent {
+          @add-mixin btn_content $key_color, $button_default_color;
+        }
+      }
+    }
+  }
+}
+
+
+/* Vars */
+
+$button_width: 7vw;
+$button_height: 5vw;
+$button_space: 5px;
+
+$button_default_color: snow;
+$button_accent_color: cornflowerblue;
+$button_orange_color: #ffc65c;
+
+$blur: 2px;
+/* Styles */
+
+html,
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", "Noto Sans Japanese", "ヒラギノ角ゴ ProN W3", Meiryo, sans-serif;
+  color: #333;
+  @add-mixin background_config;
+}
+
+.content {
+  z-index: 0;
+  position: relative;
+  width: 80vw;
+  margin: 30px auto;
+  border-radius: 10px;
+  overflow: hidden;
+
+  &:before {
+    @add-mixin ba_content -2;
+    @add-mixin background_config;
+
+    margin: -$blur;
+    filter: blur($blur);
+  }
+
+  &:after {
+    @add-mixin ba_content -1;
+    background-color: rgba(255, 255, 255, 0.4);
+  }
+}
+
+.main {
+  margin: 2vw;
+
+  .title {
+    margin-bottom: 2vw;
+    padding: 0 .5em .5em;
+    color: white;
+    font-size: 1.3rem;
+    text-shadow: 1px 1px 1px #333;
+    border-bottom: solid 2px white;
+    box-shadow: 0px 5px 5px -5px color(white shade(30%));
+  }
+
+  .calculator {
+    display: flex;
+    justify-content: space-between;
+    user-select: none;
+/*    justify-content: center;*/
+
+    .app {
+      @add-mixin calculator_design #ffc65c;
+    }
+
+/* Smaple Desing*/
+    .sample-design {
+/*      display: none;*/
+      @add-mixin calculator_design $button_accent_color;
+    }
+  }
+
+  .test {
+    margin: 2vw 0;
+
+    #react_test {
+      border-radius: 10px;
+      background-color: color(#fff alpha(30%));
+
+      > div {
+        padding: 2vw;
+      }
+    }
+  }
+}
