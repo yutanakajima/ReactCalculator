@@ -12,18 +12,18 @@ const Display = (props) => {
 }
 
 const Button = (props) => (
-  <button className={`btn btn-${props.type}`} type="button" onClick={() => props.onButtonTouch(props.operator)}>{props.operator}</button>
+  <button className={`btn btn-${props.type}`} type="button" onClick={() => props.onButtonTouch(props.symbol)}>{props.symbol}</button>
 )
 
 class Panel extends React.Component {
   constructor(props) {
     super(props);
   }
-  renderButtons(type, operator) {
-    return <td><Button type={type} operator={operator} onButtonTouch={this.props.onButtonTouch} /></td>
+  renderButtons(type, symbol) {
+    return <td><Button type={type} symbol={symbol} onButtonTouch={this.props.onButtonTouch} /></td>
   }
   renderZeroButton() {
-    return <td colSpan="2"><Button type="default btn-zero" operator={0} onButtonTouch={this.props.onButtonTouch} /></td>
+    return <td colSpan="2"><Button type="default btn-zero" symbol={0} onButtonTouch={this.props.onButtonTouch} /></td>
   }
   render() {
     return(
@@ -69,10 +69,9 @@ class Calculator extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      operator: null,
+      symbol: null,
       first_number: null,
       second_number: null,
-      answer_number: null,
       display_number: 0
     };
     this.onButtonTouch = this.onButtonTouch.bind(this);
@@ -91,7 +90,19 @@ class Calculator extends React.Component {
         this.state.second_number = Number(this.state.second_number);
       }
 
-      this.state.operator = true;
+      if(_button === 'AC') {
+        // AC押したら初期化
+        this.setState(() => {
+          return {
+            symbol: null,
+            first_number: null,
+            second_number: null,
+            display_number: 0
+          };
+        });
+      }
+
+      this.state.symbol = true;
 
       alert(
         'First Number: ' + this.state.first_number + '\n' +
@@ -103,17 +114,24 @@ class Calculator extends React.Component {
       // 数値の場合
       // alert('数値: ' + _button)
 
-      if(!this.state.operator) {
+      if(!this.state.symbol) {
+        // 記号類が入力される前
         if(this.state.display_number === 0) {
+          // ディスプレイに表示されている数値が 0 の時
           this.setState(() => {
+            // 押されたボタンの数値を入れる
             return {display_number: this.state.first_number = _button};
           });
         } else {
+          // ディスプレイに表示されている数値が 0 以外
           this.setState(() => {
+            // ディスプレイに表示されている数値 + 押されたボタンの数値 を文字列としてディスプレイに表示する
             return {display_number: this.state.first_number = '' + this.state.first_number + _button};
           });
         }
       } else {
+        // 記号類が入力された後
+
         if(this.state.display_number === 0) {
           this.setState(() => {
             return {display_number: this.state.second_number = _button};
