@@ -10,7 +10,8 @@
     "clean": "rm -f assets/js/*.js assets/css/*.css",
     "watch": "npm-run-all -p watch:*",
     "watch:js": "webpack --progress --colors --watch",
-    "watch:css": "postcss src/css/calculator.css -d assets/css -w"
+    "watch:css": "postcss src/css/calculator.css -d assets/css -w",
+    "test": "jest"
   },
   "dependencies": {
     "react": "^16.0.0",
@@ -22,6 +23,9 @@
     "babel-loader": "^7.1.2",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
+    "eslint": "^4.8.0",
+    "eslint-plugin-react": "^7.4.0",
+    "jest": "^21.2.1",
     "npm-run-all": "^4.1.1",
     "postcss": "^6.0.12",
     "postcss-calc": "^6.0.0",

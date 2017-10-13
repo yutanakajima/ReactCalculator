@@ -70,24 +70,37 @@ class Calculator extends React.Component {
     super(props);
     this.state = {
       symbol: null,
-      first_number: null,
-      second_number: null,
+      operator: null,
+      first_number: 0,
+      second_number: 0,
       display_number: 0
     };
     this.onButtonTouch = this.onButtonTouch.bind(this);
   }
   onButtonTouch(_button) {
-    // alert('onClickButton: ' + __button)
+    // 何れかのボンタンが押された時に呼ばれる
 
-    if(isNaN(_button)){
-      // 文字列の場合
-      //alert('記号: ' + _button)
-      if(!this.first_number) {
-        this.state.first_number = Number(this.state.first_number);
+    if(isNaN(_button)) {
+      // 数値以外のボタンが押された場合
+
+      // SAVE the World
+      this.state.symbol = _button
+
+      if(this.state.symbol !== '=') {
+        // = 以外を operator として保存
+        this.state.operator = this.state.symbol;
       }
 
-      if(!this.second_number) {
-        this.state.second_number = Number(this.state.second_number);
+      if(_button === '=') {
+        // = 押したとき計算
+        this.state.first_number = calc(this.state.operator, this.state.first_number, this.state.second_number)
+        this.setState(() => {
+          return {
+            // 続けて計算を行えるように、計算結果を最初の数値に保存し二番目の数値を初期化
+            display_number: Number(this.state.first_number),
+            second_number: 0
+          };
+        });
       }
 
       if(_button === 'AC') {
@@ -95,55 +108,49 @@ class Calculator extends React.Component {
         this.setState(() => {
           return {
             symbol: null,
-            first_number: null,
-            second_number: null,
+            first_number: 0,
+            second_number: 0,
             display_number: 0
           };
         });
       }
 
-      this.state.symbol = true;
-
-      alert(
-        'First Number: ' + this.state.first_number + '\n' +
-        'Second Number: ' + this.state.second_number + '\n' +
-        'Answer Number: ' + this.state.answer_number
-      );
-
-    }　else {
-      // 数値の場合
-      // alert('数値: ' + _button)
+    } else {
+      // 数値ボタンが押されたの場合
 
       if(!this.state.symbol) {
-        // 記号類が入力される前
-        if(this.state.display_number === 0) {
-          // ディスプレイに表示されている数値が 0 の時
+        // 記号が入力される前
+        if(this.state.first_number === 0) {
           this.setState(() => {
-            // 押されたボタンの数値を入れる
+            // 最初だけ押されたボタンの数値を入れる
             return {display_number: this.state.first_number = _button};
           });
         } else {
-          // ディスプレイに表示されている数値が 0 以外
           this.setState(() => {
-            // ディスプレイに表示されている数値 + 押されたボタンの数値 を文字列としてディスプレイに表示する
-            return {display_number: this.state.first_number = '' + this.state.first_number + _button};
+            // ディスプレイに表示されている数値 + 押されたボタンの数値の文字列を数値にキャストしてディスプレイに表示する
+            return {display_number: Number(this.state.first_number = '' + this.state.first_number + _button)};
           });
         }
       } else {
-        // 記号類が入力された後
-
-        if(this.state.display_number === 0) {
+        // 記号が入力された後
+        if(this.state.second_number === 0) {
           this.setState(() => {
             return {display_number: this.state.second_number = _button};
           });
         } else {
           this.setState(() => {
-            return {display_number: this.state.second_number = '' + this.state.second_number + _button};
+            return {display_number: Number(this.state.second_number = '' + this.state.second_number + _button)};
           });
         }
       }
-
     }
+
+    console.log(
+      'FN: %d SN: %d SY: %s',
+      this.state.first_number,
+      this.state.second_number,
+      this.state.symbol
+    )
 
   }
   render() {
@@ -155,7 +162,7 @@ class Calculator extends React.Component {
       </div>
     );
   }
-};
+}
 
 // Renderer
 ReactDOM.render(
@@ -165,77 +172,26 @@ ReactDOM.render(
 
 
 // Functions
-const isType = (button) => {
-
-}
-
-const calc = (operator, nums) => {
-  ans = null;
+const calc = (operator, x, y) => {
+  let ans = 0;
 
   switch (operator){
     case '+':
-      ans = nums + nums;
+      ans = Number(x) + Number(y);
       break;
     case '-':
-      ans = nums - nums;;
+      ans = Number(x) - Number(y);
       break;
     case '*':
-      ans = nums * nums;
+      ans = Number(x) * Number(y);
       break;
     case '/':
-      ans = nums / nums;
+      ans = Number(x) / Number(y);
       break;
     case '%':
-      ans = nums % nums;
+      ans = Number(x) % Number(y);
       break;
   }
-  return null
+
+  return ans
 };
-
-const list = [
-  ['AC', '±', '%', '/'],
-  [7, 8, 9, '*'],
-  [4, 5, 6, '-'],
-  [1, 2, 3, '+'],
-  [0, '.', '=']
-]
-
-
-// Test
-
-const Test = (props) => {
-  return <h1 className="react-test-header">{props.test}</h1>
-}
-
-class Parent extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value1: 'TEST: Click me!'
-    };
-    this.handleClick = this.handleClick.bind(this);
-  }
-  handleClick() {
-    this.setState(() => {
-      return { value1: 'TEST: Done!!' };
-    });
-  }
-  render() {
-    return (
-      <div>
-        <Child data={this.state.value1} handleClick={this.handleClick} />
-      </div>
-    );
-  }
-}
-
-const Child = (props) => (
-  <div onClick={props.handleClick}>
-    {props.data}
-  </div>
-);
-
-ReactDOM.render(
-  <Parent />,
-  document.getElementById('react_test')
-);

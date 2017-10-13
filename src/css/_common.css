@@ -162,16 +162,4 @@ body {
     }
   }
 
-  .test {
-    margin: 2vw 0;
-
-    #react_test {
-      border-radius: 10px;
-      background-color: color(#fff alpha(30%));
-
-      > div {
-        padding: 2vw;
-      }
-    }
-  }
 }
