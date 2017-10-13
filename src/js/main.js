@@ -172,7 +172,7 @@ ReactDOM.render(
 
 
 // Functions
-const calc = (operator, x, y) => {
+function calc(operator, x, y) {
   let ans = 0;
 
   switch (operator){
@@ -194,4 +194,4 @@ const calc = (operator, x, y) => {
   }
 
   return ans
-};
+}
